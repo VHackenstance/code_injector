@@ -8,7 +8,15 @@ sudo iptables -I INPUT -j NFQUEUE --queue-num 0 --queue-bypass
 sudo iptables -I OUTPUT -j NFQUEUE --queue-num 0 --queue-bypass
 </li>
 <li></li>
-<li></li>
+<li>
+    Afterwards, <b>clear the iptables</b>
+    <br>
+    sudo iptables --flush
+</li>
+<li>
+    Check the tables have been flushed.<br/>
+    <b>sudo iptables -L</b>
+</li>
 </ol>
 <p></p>
 <p></p>
