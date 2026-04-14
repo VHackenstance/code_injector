@@ -5,10 +5,9 @@ import re
 
 new_line = "\n\n"
 
-# Ensure HTML Request does not compress(encode) the HTML file
-# Use regex to return the contents of the ACCEPT ENCODING Field if it is in load
-# Accept-Encoding:.*?\\r\\n
-# Then remove the Accept-Encoding and its field from the load.
+# Ensure HTML Request does not compress(encode) the HTML file.  Use regex to return the contents of the
+# ACCEPT ENCODING Field if it is in load [Accept-Encoding:.*?\\r\\n]. There are different formats for the
+# encoding request.  By removing the field from the load we prevent the encoding from progressing.
 def remove_encode_request(packet, set_ld):
     pattern = "Accept-Encoding:.*?\\r\\n"
     load = packet[Raw].load
