@@ -22,7 +22,7 @@ def set_pytables():
         print("\nCheck if the iptables have been flushed (unset)\n")
         subprocess.call(["sudo", "iptables", "-L"])
 
-print("[+] Hellow World!  This is set-pytables")
+print("\n[+] Hellow World!  This is set_iptables")
 set_pytables()
 
 
