@@ -29,36 +29,24 @@ and Certificate Pinning.  I am building it as a scaffold, as with every project 
 </ol>
 
 <h4>Setting the iptables can now be run by a script</h4>
-<h5>sudo python ./Utilities/set_iptables.py -s [True/False/Omit] -n [number/omit] -f [True/False/Omit]</h5>
+<h4>sudo python ./Utilities/set_iptables.py -s [True/False/Omit] -n [number/omit] -f [True/False/Omit]</h4>
 <ul>
-<li>-s, --set, is setiptables, do you want to set iptables True or False
+<li><b>-s</b>, --set, is setiptables, do you want to set iptables True or False
     <br/>
-    If you do not want to set just leave blank.
+        If you do not want to set just leave blank.
 </li>
 <li>
--n, --number, is number, specify the table number, default 0
+<b>-n</b>, --number, is number, specify the table number, default 0
     <br/>
-    If you do not want to set just leave blank.
+        If you do not want to set just leave blank.
 </li>
 <li>
--f, --flush, is flush, do you want to flush(unset/clear) iptables True or False
+<b>-f</b>, --flush, is flush, do you want to flush(unset/clear) iptables True or False
     <br/>
-    If you do not want to flush just leave blank.
+        If you do not want to flush just leave blank.
     <br/>
-    Or, you can place of a value of False.
+        Or, you can place of a value of False.
 </li>
 </ul>
 
-
-
-
-
-<p></p>
-<p></p>
-<p></p>
-<h4>/h4>
-<p></p>
-<h3>
-</h3>
-<h4></h4>
 
