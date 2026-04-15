@@ -11,15 +11,17 @@ def set_pytables():
 
     if options.setiptables and options.number:
         number = options.number
-        print("\n[+] Set the iptables to: " + number + "\n")
+        print("\n[+] We have a request to set iptables: ")
+        print("[+] We have set the iptables to: " + number)
         subprocess.call(["sudo", "iptables", "-I", "INPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
         subprocess.call(["sudo", "iptables", "-I", "OUTPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
-        print("[+]Check if the iptables have been set")
+        print("[+] Check if the iptables have been set:\n")
         subprocess.call(["sudo", "iptables", "-L"])
 
     elif options.flush:
         subprocess.call(["sudo", "iptables", "--flush"])
-        print("\nCheck if the iptables have been flushed (unset)\n")
+        print("\n[+] Flush iptables.")
+        print("[+] Check if the iptables have been flushed (unset)\n")
         subprocess.call(["sudo", "iptables", "-L"])
 
 print("\n[+] Hellow World!  This is set_iptables")
