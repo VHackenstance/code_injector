@@ -4,6 +4,7 @@ import argparse
 
 def set_pytables():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--remote", dest="remote", help="Test against a remote Target.")
     parser.add_argument("-s", "--set", dest="setiptables", help="Set IP Tables.")
     parser.add_argument("-n", "--number", dest="number", help="iptables number to set.")
     parser.add_argument("-f", "--flush", dest="flush", help="Flush the iptables.")
@@ -11,17 +12,22 @@ def set_pytables():
 
     if options.setiptables and options.number:
         number = options.number
-        print("\n[+] We have a request to set iptables: ")
-        print("[+] We have set the iptables to: " + number)
-        subprocess.call(["sudo", "iptables", "-I", "INPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
-        subprocess.call(["sudo", "iptables", "-I", "OUTPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
-        print("[+] Check if the iptables have been set:\n")
+        print("[+] We have a request to set the iptables to: " + number)
+        if options.remote:
+            print("[+] We have a request to test to a remote target.")
+            subprocess.call(
+                ["sudo", "iptables", "-I", "FORWARD", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
+        else:
+            print("[+] We have a request to test locally.")
+            subprocess.call(["sudo", "iptables", "-I", "INPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
+            subprocess.call(["sudo", "iptables", "-I", "OUTPUT", "-j", "NFQUEUE", "--queue-num", number, "--queue-bypass"])
+        print("[+] Check the iptables have been set:\n")
         subprocess.call(["sudo", "iptables", "-L"])
 
     elif options.flush:
         subprocess.call(["sudo", "iptables", "--flush"])
-        print("\n[+] Flush iptables.")
-        print("[+] Check if the iptables have been flushed (unset)\n")
+        print("[+] Flush iptables.")
+        print("[+] Check if the iptables have been flushed.\n")
         subprocess.call(["sudo", "iptables", "-L"])
 
 print("\n[+] Hellow World!  This is set_iptables")

