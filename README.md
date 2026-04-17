@@ -49,5 +49,9 @@ and Certificate Pinning.  I am building it as a scaffold, as with every project 
 <p>I am testing against the only http website I currently know.<br/>
 <b>http://testasp.vulnweb.com/Default.asp?</b><br/>
 </p>
+<h4>index.html file location</h4>
+<p>
+/var/www/htlm/index.html
+</p>
 
 
