@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-# Rebuild
-# We are testing here online against either of OWASP Juice Shop, or Vulnweb
-# http://juice-shop.herokuapp.com/#/  or http://testasp.vulnweb.com/
-# Let me state clearly, both these sites as designated af freely hackable sites.
+# Rebuild - View README for testing parameters.
 import netfilterqueue
 from scapy.layers.inet import IP, TCP
 from scapy.layers.dns import Raw
 import re
 
 AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
+replace_load = ""
 
 # Take our modified load and set it to the packet load
 def set_load(packet, load):
@@ -26,9 +24,9 @@ def process_packet(packet):
             # print("\n[+] Packet has layer TCP")
             if scapy_packet[TCP].dport == 80:
                 print("[+] This is a HTTP Request:  ")
-                # Find string "Accept-Encoding" in the payload of HTTP Request Raw layer
-                # replace with nothing, and save in modified_load
+                # Find "Accept-Encoding" in payload, replace with ""
                 modified_load = re.sub(AcceptEncodingRegex, "", scapy_packet[Raw].load)
+                # Create a new packet
                 new_packet = set_load(scapy_packet, modified_load)
                 # set the new packet with the updated payload to the actual packet
                 packet.set_payload(str(new_packet))
@@ -36,7 +34,8 @@ def process_packet(packet):
             # in the payload.
             elif scapy_packet[TCP].sport == 80:
                 print("[+] This is a HTTP Response: ")
-                print(scapy_packet.show())
+                # invoke python method replace to replace a string with another string
+                modified_load = scapy_packet[Raw].load.replace
 
     packet.accept()
 
