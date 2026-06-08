@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # Rebuild
+# We are testing here online against either of OWASP Juice Shop, or Vulnweb
+# http://juice-shop.herokuapp.com/#/  or http://testasp.vulnweb.com/
+# Let me state clearly, both these sites as designated af freely hackable sites.
 import netfilterqueue
 from scapy.layers.inet import IP, TCP
 from scapy.layers.dns import Raw
 import re
 
-# Take our modified load and set it to the actual load
+AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
+
+# Take our modified load and set it to the packet load
 def set_load(packet, load):
     packet[Raw].load = load
-    # For scapy to recalculate IP and Chksum values for our updated load
-    # You need to delete them
+    # For scapy to recalculate IP and Chksum for updated load, delete them
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
     return packet
-
-
-
-AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
 
 def process_packet(packet):
     scapy_packet= IP(packet.get_payload())
@@ -32,15 +32,16 @@ def process_packet(packet):
                 new_packet = set_load(scapy_packet, modified_load)
                 # set the new packet with the updated payload to the actual packet
                 packet.set_payload(str(new_packet))
-            # Remove elif for testing modify payload in HTTP request
-            # elif scapy_packet[TCP].sport == 80:
-                # print("[+] This is a HTTP Response: ")
-                # print(scapy_packet.show())
+            # After testing the above, we should get nothing but clean HTML page markup
+            # in the payload.
+            elif scapy_packet[TCP].sport == 80:
+                print("[+] This is a HTTP Response: ")
+                print(scapy_packet.show())
 
     packet.accept()
 
 
 if __name__ == "__main__":
     queue = netfilterqueue.NetfilterQueue()
-    queue.bind(0, process_packet)
+    queue.bind(2, process_packet)
     queue.run()

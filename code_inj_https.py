@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # Rebuild - Separate Script for testing with OWASP Juice Shop which I think is Https
+# We are testing here locally against OWASP Juice Shop
+# http://127.0.0.1:42000/#/
 import netfilterqueue
 from scapy.layers.inet import IP, TCP
 from scapy.layers.dns import Raw
@@ -37,6 +39,13 @@ def process_packet(packet):
                 if "Accept-Encoding" in scapy_packet[Raw].load:
                     print("[+] Accept Encoding in Payload:  ")
                     print(scapy_packet[Raw].load)
+
+            # TODO ************************
+            #  Write a loop to cycle through ports
+            #   How about autodect ports being used for HTTP traffic
+            #   Do the same things as here for replace_download
+            #    The actual idea would be to have scripts adaptable to any scenerio
+            # END TODO ********************
 
                 # Find string "Accept-Encoding" in the payload of HTTP Request Raw layer
                 # replace with nothing, and save in modified_load

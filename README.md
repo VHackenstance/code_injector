@@ -1,7 +1,46 @@
 <h3>CODE INJECTOR</h3>
-<p>
-HTTP only.  
-</p>
+    <p>
+    HTTP only.  
+    </p>
+<h3>Testing Online</h3>
+    <h4>Before we progress let me state clearly, in the main script code_injector.py</h4>
+    <p>We are testing HTTP online against either OWASP Juice Shop, and/or Vulnweb.
+        <br/> 
+            Both of these site have been designed and hosted as hackable sites.  Fully legal.
+        <br/>
+            <b>http://juice-shop.herokuapp.com/#/</b>
+        <br />
+            <b>http://testasp.vulnweb.com/</b>
+            Let me state again, both these sites are designated af freely hackable sites.
+
+<h3>Testing Locally</h3>
+    <h4>I have written a separate script code_inj_https.py to deal with localhost testing...</h4>
+        <p> Against OWASP Juice Shop 
+            <br/>
+                <b>http://127.0.0.1:42000/#/</b>
+        </p>
+    <h4>The following is a brief install guide to Juice Shop from the terminal in Kali Linux.</h4>
+    <p>
+        Because the amount of BS and misinformation about how to do this, when it is so 
+        simple, is ridiculous.  eg, install Docker, install node, install npm, 
+        <br/>download from github.  So, simply put, here his the painfree Linux Rox version:
+    </p>
+    <ol>
+        <li>From anywhere on your terminal command line
+            <br />
+            <b>sudo apt install juice-shop</b>
+        </li>
+        <li>When install is complete</li>
+        <li><b>sudo juice-shop start</b></li>
+        <li>Navigate to: <b>http://127.0.0.1:42000/#/</b>
+        <li>Take a moment to recognize that Linux ROX!</li>
+        <li> And just listen to the Angels weep, with laughter.</li>
+    </ol>
+    
+
+
+
+
 <h4>Modify the data in the RAW layer, more specifically, the HTML code.</h4>
 <h4>Process</h4>
 <ol>
