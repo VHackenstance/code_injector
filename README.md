@@ -22,11 +22,15 @@ HTTP only.
         </li>
     </li>
 </ol>
+<h4>Created a separate script code_inj_https, to test against OWASP Juice Shop</h4>
 <p>I am testing against.<br/>
 <b>http://testasp.vulnweb.com/</b><br/>
 /var/www/htlm/index.html
 </p>
-    <h4>OWASP Webgoat Install.  Tested locally does not generate HTTP requests or responses</h4>
+    <h4>OWASP Webgoat Tested locally does not generate HTTP requests or responses</h4>
+    <p>Also the installation is difficult but this is moot because it does not work.</p>
+<h4>Created a separate script code_inj_https, to test against OWASP Juice Shop</h4>
+<p>Early testing good results, </p>
 <ol>
 <li>Navigate to: <b>https://github.com/WebGoat/WebGoat/releases</b></li>
 <b>Download the <b>webgoat-[version_number].jar</b> file</li>
