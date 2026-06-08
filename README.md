@@ -2,40 +2,40 @@
 <p>
 HTTP only.  
 </p>
-<h4>Process - Locally</h4>
+<h4>Modify the data in the RAW layer, more specifically, the HTML code.</h4>
+<h4>Process</h4>
 <ol>
     <li>
-        Set IP Table rules using set_iptables.py <br/>
+        Set IP Table rules using set_iptables.py<br/>
+        You can figure how to do this, or just set the tables manually.
     </li>
     <li>
-        Afterwards, flush the iptables
-    </li>
-    <li>
-        Check the tables have been flushed.<br/>
+        Afterwards, flush the iptables, and check the tables have been flushed.<br/>
         <b>sudo iptables -L</b>
     </li>
+    <li>
+   
+    </li>
 </ol>
-<ul>
-    <li><b>-s</b>, --set, is setiptables, do you want to set iptables True or False
-        <br/>
-            If you do not want to set False or just leave blank.
-    </li>
-    <li>
-    <b>-n</b>, --number, is number, specify the table number, default 0
-        <br/>
-            If you do not want to set just leave blank.
-    </li>
-    <li>
-    <b>-f</b>, --flush, is flush, do you want to flush(unset/clear) iptables True or False
-        <br/>
-            If you do not want to flush just leave blank.
-        <br/>
-            Or, you can place of a value of False.
-    </li>
-</ul>
 <p>I am testing against.<br/>
 <b>http://testasp.vulnweb.com/</b><br/>
 /var/www/htlm/index.html
 </p>
+<h4>OWASP Webgoat Install, for (Kali?) Linux only.</h4>
+<p>I am yet to test this <b>Locally</b> against packet_sniffer and replace_downloads
+    <br/>
+    But I am hoping it will do a better job than OWASP Juice shop - locally.
+    <br/>
+    Oh, and no Docker, sorry not sorry.  Really do not like it, almost exclusively because of the 
+    way it just vomits all over ip_tables.  If it is doing that to ip_tables how is
+    is messing up other parts of your code?
+</p>
+<ol>
+<li>Navigate to: <b>https://github.com/WebGoat/WebGoat/releases</b></li>
+<b>Download the <b>webgoat-[version_number].jar</b> file</li>
+<li>Navigate to <b>/Downloads directory</b></li>
+<li>Run: <b>$ java -jar webgoat-2025.3.jar</b></li>
+<li></li>
+</ol>
 
 
