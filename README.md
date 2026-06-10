@@ -10,8 +10,13 @@
     For larger sites it breaks the payload download, and my testing has yet to 
     discover why this is the case.  At this point I am going to progress my learning
     and hope I stumble upon a solution, or revisit the issue in the future.
+    <h4>It does work in other sites but only if you insert the code in an earlier tag.
+    </h4>
+    A specific example of this is 
+    <br/><b>http://www.pentest-standard.org/</b>
+    <br/>
+    I also tested converting load to a string earlier but this made no difference.
 
-</p>
 <h3>Testing Online</h3>
     <h4>Before we progress let me state clearly, in the main script code_injector.py</h4>
     <p>We are testing HTTP online against OWASP Juice Shop, and/or Vulnweb.

