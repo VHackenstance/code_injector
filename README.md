@@ -2,6 +2,16 @@
     <p>
     HTTP only.  
     </p>
+<p>
+    This script works fine but only with the following site 
+    <br />
+    <b>http://testasp.vulnweb.com/</b>
+    <br />
+    For larger sites it breaks the payload download, and my testing has yet to 
+    discover why this is the case.  At this point I am going to progress my learning
+    and hope I stumble upon a solution, or revisit the issue in the future.
+
+</p>
 <h3>Testing Online</h3>
     <h4>Before we progress let me state clearly, in the main script code_injector.py</h4>
     <p>We are testing HTTP online against OWASP Juice Shop, and/or Vulnweb.
