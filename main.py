@@ -5,9 +5,6 @@ from scapy.layers.inet import IP, TCP, UDP
 from scapy.layers.dns import Raw
 import re
 
-AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
-replace_load = ""
-
 def set_load(packet, load):
     packet[Raw].load = load
     del packet[IP].len
@@ -19,6 +16,8 @@ def set_load(packet, load):
     return packet
 
 def process_packet(packet):
+    AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
+    replace_load = ""
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
         load = scapy_packet[Raw].load

