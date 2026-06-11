@@ -16,6 +16,13 @@
     <br/><b>http://www.pentest-standard.org/</b>
     <br/>
     I also tested converting load to a string earlier but this made no difference.
+    <br />
+    UPDATE:  Also tested now against the functioning.  
+    <br />
+    <b>http://juice-shop.herokuapp.com/#/</b>
+    <br />
+    And it also breaks the site by somehow stopping the page loading, the raw loads
+    being delivered, midway.  Works with </head> tag but also breaks page load.
 
 <h3>Testing Online</h3>
     <h4>Before we progress let me state clearly, in the main script code_injector.py</h4>
