@@ -26,8 +26,8 @@ def process_packet(packet):
             if scapy_packet[TCP].dport == 80:
                 print("[+] HTTP Request:  ")
                 load = re.sub(
-                    "Accept-Encoding:.*?\\r\\n",
-                    "",
+                    AcceptEncodingRegex,
+                    replace_load,
                     load,
                     flags=re.IGNORECASE | re.MULTILINE
                 )
@@ -40,7 +40,7 @@ def process_packet(packet):
             if load != scapy_packet[Raw].load:
                 new_packet = set_load(scapy_packet, load)
                 packet.set_payload(str(new_packet))
-                
+
     packet.accept()
 
 if __name__ == "__main__":
