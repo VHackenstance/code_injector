@@ -3,50 +3,44 @@
     HTTP only.  
     </p>
 <p>
-    This script works fine but only with the following site 
+    This script works fully with:  <b>http://testasp.vulnweb.com/</b>
     <br />
-    <b>http://testasp.vulnweb.com/</b>
-    <br />
-    Setting Content-Length has made it work better, but still not ideal
+    Modifying Content-Length has made it work better, but still not ideal
     <h4>
         It does work in other sites if you insert the code in an earlier tag.
     </h4>
-    A specific example of this is:  <b>http://www.pentest-standard.org/</b>
+    <b>http://www.pentest-standard.org/</b>
     <br/>
-    I also tested converting load to a string earlier but this made no difference.
+    Converting load to a string earlier made no difference.
     <br />
-    UPDATE:  Works now against the functioning.  
+    UPDATE:  Works now against the functioning:  <b>http://juice-shop.herokuapp.com/#/</b>
     <br />
-    <b>http://juice-shop.herokuapp.com/#/</b>
+    But breaks the site stopping page load, the raw loads.  
     <br />
-    And it also breaks the site by somehow stopping the page loading, the raw loads
-    being delivered, midway.  Works with </head> tag but also breaks page load.
+    Works with </head> tag but also breaks page load.
 
 <h3>Testing Online</h3>
-    <h4>Before we progress let me state clearly, in the main script code_injector.py</h4>
     <p>We are testing HTTP online against OWASP Juice Shop, and/or Vulnweb.
         <br/> 
-            Both of these site have been designed and hosted as hackable sites.  Fully legal.
+            Both of these site have been designed and hosted as hackable sites. 
+        <br/> 
+        Fully legal.
         <br/>
             <b>http://juice-shop.herokuapp.com/#/</b>
         <br />
             <b>http://testasp.vulnweb.com/</b>
-        <br/>
-            Let me state again, both these sites are designated af freely hackable sites.
 
 <h3>Testing Locally</h3>
-    <h4>I have written a separate script code_inj_https.py to deal with localhost testing...</h4>
-        <p> Against OWASP Juice Shop 
-            <br/>
-                <b>http://127.0.0.1:42000/#/</b>
+    <h4>Separate script code_inj_https.py to deal with localhost testing...</h4>
+        <p> Against OWASP Juice Shop:  <b>http://127.0.0.1:42000/#/</b>
         </p>
-    <h4>The following is a brief install guide to Juice Shop from the terminal in Kali Linux.</h4>
+    <h4>Brief install guide, Juice Shop from the terminal in Kali Linux.</h4>
     <p>
-        Because there is misinformation about how to do this, when it is 
-        simple.  
+        There is misinformation about how to do this.  
         <br/>
-        eg, install Docker, install node, install npm, eg... 
-        download from github.  So, simply put, here his the painfree <b>Linux Rox</b> version:
+        eg, install Docker, install node, install npm, download from github.  
+        <br/>
+        Here is the painfree <b>Linux</b> version:
     </p>
     <ol>
         <li>From anywhere on your terminal command line
@@ -58,8 +52,6 @@
         <li>Navigate to: <b>http://127.0.0.1:42000/#/</b>
         <li>Take a moment to recognize that Linux ROX!</li>
     </ol>
-
-<h4>Modify the data in the RAW layer, more specifically, the HTML code.</h4>
 <h4>Process</h4>
 <ol>
     <li>
@@ -71,12 +63,7 @@
         <b>sudo iptables -L</b>
     </li>
     <li>
-        We want to remove Accept-Encoding from the HTTP Request load.
-        <br />
-        <b>Accept-Encoding: gzip, deflate\r\n </b>
-        <li>
-            Do this with regex: <b>"Accept-Encoding:.*?\\r\\n"</b>
-        </li>
+        No port forwarding required.
     </li>
 </ol>
 
