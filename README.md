@@ -5,19 +5,16 @@
 <p>
     This script works fully with:  <b>http://testasp.vulnweb.com/</b>
     <br />
-    Modifying Content-Length has made it work better, but still not ideal
     <h4>
         It does work in other sites if you insert the code in an earlier tag.
     </h4>
+    <p>eg, </head> tag but may also break page load</p>
     <b>http://www.pentest-standard.org/</b>
-    <br/>
-    Converting load to a string earlier made no difference.
     <br />
-    UPDATE:  Works now against the functioning:  <b>http://juice-shop.herokuapp.com/#/</b>
+    Works now against functioning:  <b>http://juice-shop.herokuapp.com/#/</b>
     <br />
-    But breaks the site stopping page load, the raw loads.  
+    But breaks the site stopping page load.  
     <br />
-    Works with </head> tag but also breaks page load.
 
 <h3>Testing Online</h3>
     <p>We are testing HTTP online against OWASP Juice Shop, and/or Vulnweb.
@@ -66,5 +63,28 @@
         No port forwarding required.
     </li>
 </ol>
+<h3>Client Side Attacks.</h3>
+    <h4>Beef Framework.</h4>
+        <p>
+            Browser Exploitation Framework allowing us to launch a number of attacks
+            on a hooked target.
+            <br />
+            Targets are hooked once they load a hook url.
+        </p>
+        <ol>
+            <li>DNS spoof requests to a page containing the hook</li>
+            <li>Inject the hook in browsed pages (need to be onPath)</li>
+            <li>Use XSS Exploit</li>
+            <li>Social engineer the target to open a hook page.</li>
+        </ol>
+        Do the usual
+        <ol>
+            <li>sudo apt update</li>
+            <li>sudp apt upgrade</li>
+            <li>sudo apt-get install beef-xss</li>
+            <li>In apps, navigate to Beef Start BeEF-xss, and click to start </li>
+            <li>You will be prompted for a UN and a PW</li>
+            <li>Navigate to <b>http://127.0.0.1:3000/ui/panel</b></li>
+        </ol>
 
 
