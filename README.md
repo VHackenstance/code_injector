@@ -103,7 +103,45 @@
                 That's the only code you need for this example.
             </li>
             <li>Start your websever: $ service apache2 start</li>
+            <li>So now, when we load our index.html into the browser of a 
+                <br/>
+                local or a remote VM on our VN, the beef panel will update
+                <br/>
+                Check it out, explore the tabs
+            </li>
+            <li>
+                Add the BeEF injection code to our code injector script.
+            </li>
+            <li>
+                Tested works fine against Vulnweb.  After this, BeEF updates.
+            </li>
+        </ol>
+    <h4>Most useful commands</h4>
+        <ol>
+            <li>
+                Click on the target browser to bring up the GUI.
+            </li>
+                Select the commands tab.
+            <li>
+                Let's do a simple alert.
+                <br/>
+                Type alert into the search field.
+                <li>
+                    Select <b>Create alert dialog</b>
+                </li>
+                <li>
+                    Select Execute
+                </li>
+            </li>
             <li></li>
+            <li>
+            </li>
+            <li>
+                
+            </li>
+            <li>
+
+            </li>
         </ol>
 
 

