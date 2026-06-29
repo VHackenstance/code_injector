@@ -1,5 +1,13 @@
 <h3>CODE INJECTOR</h3>
 Tested HTTPS Bettercap SSLStrip
+<h4>UPDATE</h4>
+Did not get this working with Bettercap, in fact managed to break it
+<br/>
+for the usual http sites, but cannot be arse to bug hunt, fix it as
+<br/>
+have dwindling interest of MitM stuff and just want to move on to 
+<br/>
+next phase.
 <p>
     This script works fully with:  <b>http://testasp.vulnweb.com/</b>
     <br />

@@ -1,7 +1,6 @@
 import netfilterqueue
-from scapy.layers.inet import IP, TCP, UDP
+from scapy.layers.inet import IP, TCP
 from scapy.layers.dns import Raw
-import http.client
 import re
 
 AcceptEncodingRegex = "Accept-Encoding:.*?\\r\\n"
